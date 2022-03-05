@@ -17,6 +17,5 @@ public class FileIOTest
             String endOfLineString = (index == lastIndex) ? "]" : "";
             System.out.print(line + endOfLineString);
         }
-
     }
 }
