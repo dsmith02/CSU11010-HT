@@ -10,34 +10,32 @@ public class NewGradeConvertor
     static final int SECOND_CLASS_TWO_CODE = 3;
     static final int SECOND_CLASS_ONE_CODE = 4;
     static final int FIRST_CLASS_CODE = 5;
+    static final String END_PROGRAM = "quit";
+    static final String VALID_PERCENTAGE = "(100.?0?|[0-9]+.?[0-9]*|quit|QUIT)";
+    static final Scanner scanner = new Scanner(System.in);
     static ArrayList<Integer> gradeList = new ArrayList<>();
 
     public static void main(String[] args)
     {
-        Scanner scanner = new Scanner(System.in);
-        String input = "";
-        do
+        String userInput = "";
+        while (!userInput.equalsIgnoreCase(END_PROGRAM))
         {
-            boolean correctInput = false;
-            System.out.print("Enter the grade you wish to convert> ");
-            while(!correctInput)
-            {
-                input = scanner.nextLine();
-                if (input.equalsIgnoreCase("quit"))
-                {
-                    break;
-                }
-                System.out.println("Invalid input! It must be a decimal number!");
-                System.out.print("Enter the grade you wish to convert> ");
-            }
-            double percentage = scanner.nextDouble();
-            if (!input.equalsIgnoreCase("quit"))
-            {
 
-            }
-        } while (!input.equalsIgnoreCase("quit"));
+        }
     }
 
+    public static String getUserInput()
+    {
+        System.out.print("Enter the grade you wish to convert> ");
+        String input = scanner.nextLine();
+        while (!input.matches(VALID_PERCENTAGE))
+        {
+            System.out.println("Invalid percentage. Number must be -> 0.0 <= number <= 100.0");
+            System.out.print("Enter the grade you wish to convert> ");
+            input = scanner.nextLine();
+        }
+        return input;
+    }
     public static void computeGradeClass(double percentage)
     {
         int numberOfTens = (int) percentage / 10;
