@@ -112,13 +112,31 @@ public class WordLinks
     public static ArrayList<String> readWordList()
     {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter a comma separated list of words (or an empty list to quit):");
-        String input = scanner.nextLine();
-        if (input == null || input.equalsIgnoreCase(""))
+        String input = "";
+        boolean invalidInput = true;
+        while (invalidInput)
         {
-            return null;
+            System.out.println("Enter a comma separated list of words (or an empty list to quit):");
+            input = scanner.nextLine();
+            if (input.equalsIgnoreCase(""))
+            {
+                return null;
+            }
+            else if (!input.contains(","))
+            {
+                System.out.println("Invalid input. Please try again.");
+            }
+            else
+            {
+                invalidInput = false;
+            }
         }
-        return new ArrayList<>(List.of(input.trim().split(", ")));
+        ArrayList<String> list = new ArrayList<>(List.of(input.trim().split(",")));
+        for (int index = 0; index < list.size(); index++)
+        {
+            list.set(index, list.get(index).trim());
+        }
+        return list;
     }
 
     public static boolean isUniqueList(ArrayList<String> wordList)
@@ -167,7 +185,12 @@ public class WordLinks
 
     public static boolean isWordChain(ArrayList<String> list)
     {
-        for (int index = 1; index < list.size() && isUniqueList(list); index++)
+        if (!isUniqueList(list))
+        {
+            return false;
+        }
+
+        for (int index = 1; index < list.size(); index++)
         {
             String currentWord = list.get(index);
             String previousWord = list.get(index - 1);
