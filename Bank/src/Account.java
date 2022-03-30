@@ -38,7 +38,9 @@ public class Account
         else
         {
             System.out.println("Account is already inactive.");
+            return false;
         }
+        return true;
     }
     public boolean isActive()
     {
