@@ -36,10 +36,11 @@ public class Connect4Grid2DArray implements Connect4Grid
             representation += "\n" + (row + 1);
             for (int col = 0; col < NUM_GRID_COLUMNS; col++)
             {
-                representation += grid[row][col] == 0 ? " E" : grid[row][col] == PLAYER_ONE ? " R" : " Y";
+                representation += grid[row][col] == NO_PIECE ? " E" : grid[row][col] == PLAYER_ONE ? " R"
+                        : grid[row][col] == PLAYER_TWO ? " Y" : " ";
             }
         }
-        representation += "\n  1 2 3 4 5 6 7";
+        representation += "\n  1 2 3 4 5 6 7\nE = EMPTY, R = REDS, Y = YELLOW";
         return representation;
     }
 
@@ -56,7 +57,7 @@ public class Connect4Grid2DArray implements Connect4Grid
     @Override
     public boolean isColumnFull(int column)
     {
-        return grid[0][column] != 0;
+        return grid[0][column] != NO_PIECE;
     }
 
     @Override
@@ -69,6 +70,8 @@ public class Connect4Grid2DArray implements Connect4Grid
         lastPieceColumn = column;
     }
 
+    // This was horrible to code, apologies for the convoluted mess that it is. I attempted to do this in one day and this
+    // was the best algorithm I came up with given my limited time - DS.
     @Override
     public boolean didLastPieceConnect4()
     {
@@ -164,14 +167,11 @@ public class Connect4Grid2DArray implements Connect4Grid
     @Override
     public boolean isGridFull()
     {
-        for (int row = 0; row < grid.length; row++)
+        for (int col = 0; col < grid.length; col++)
         {
-            for (int col = 0; col < grid[row].length; col++)
+            if (grid[0][col] == NO_PIECE)
             {
-                if (grid[row][col] == 0)
-                {
-                    return false;
-                }
+                return false;
             }
         }
         return true;
@@ -182,8 +182,8 @@ public class Connect4Grid2DArray implements Connect4Grid
         for (int row = 0; row < NUM_GRID_ROWS; row++)
         {
             int currentSlotValue = grid[row][column];
-            if ((row == NUM_GRID_ROWS - 1 && currentSlotValue == 0)
-                    || (currentSlotValue == 0 && grid[row + 1][column] != 0))
+            if ((row == NUM_GRID_ROWS - 1 && currentSlotValue == NO_PIECE)
+                    || (currentSlotValue == 0 && grid[row + 1][column] != NO_PIECE))
             {
                 return row;
             }
