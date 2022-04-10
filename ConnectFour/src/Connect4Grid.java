@@ -7,5 +7,4 @@ public interface Connect4Grid
     void dropPiece(ConnectPlayer player, int column);
     boolean didLastPieceConnect4();
     boolean isGridFull();
-
 }
