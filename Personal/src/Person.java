@@ -1,3 +1,6 @@
+import java.security.SecureRandom;
+import java.util.ArrayList;
+
 public class Person
 {
     private String forename;
@@ -9,7 +12,9 @@ public class Person
     private int birthDay;
     private int birthMonth;
     private int birthYear;
+    private int identifier;
     private boolean isEmployed;
+    private static ArrayList<Integer> listOfIdentifier = new ArrayList<>();
 
     public Person(String forename, String surname, String address, String college, String nationality, int age, int birthDay, int birthMonth, int birthYear, boolean isEmployed)
     {
@@ -23,6 +28,33 @@ public class Person
         this.birthMonth = birthMonth;
         this.birthYear = birthYear;
         this.isEmployed = isEmployed;
+        identifier = generateIdentifier();
+        listOfIdentifier.add(identifier);
+    }
+
+    private int generateIdentifier()
+    {
+        SecureRandom random = new SecureRandom();
+        random.generateSeed(126);
+        return random.nextInt();
+    }
+
+    public int getIdentifier()
+    {
+        return identifier;
+    }
+
+    public boolean match(Person person)
+    {
+        if (this.identifier == person.getIdentifier())
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public void isSamePerson(Person person)
+    {
     }
 
     public String toString()

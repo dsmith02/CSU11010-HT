@@ -30,6 +30,21 @@ public class Connect4Grid2DArray implements Connect4Grid
     }
 
     @Override
+    public String toString()
+    {
+        String representation = " 1 2 3 4 5 6 7\n -------------";
+        for (int row = 0; row < NUM_GRID_ROWS; row++)
+        {
+            representation += "\n" + (row - 1) + " |";
+            for (int col = 0; col < NUM_GRID_COLUMNS; col++)
+            {
+                representation += grid[row][col] == 0 ? " " : grid[row][col] == 1 ? " 1" : " 2";
+            }
+        }
+        return representation;
+    }
+
+    @Override
     public boolean isValidColumn(int column)
     {
         if (column >= 1 && column <= NUM_GRID_COLUMNS)
@@ -55,9 +70,13 @@ public class Connect4Grid2DArray implements Connect4Grid
     @Override
     public void dropPiece(ConnectPlayer player, int column)
     {
-        if (!checkColumnValidity(column))
+        if (!isValidColumn(column))
         {
-            System.out.println("That column is invalid. It must be in the range 1-7 and must not be full!");
+            System.out.println("That column is invalid. It must be in the range 1-7.");
+        }
+        else if (isColumnFull(column))
+        {
+            System.out.println("The column is full, please try again.");
         }
         else
         {
@@ -77,23 +96,87 @@ public class Connect4Grid2DArray implements Connect4Grid
             return false;
         }
 
-        int dx = 1;
-        int dy = 0;
-        int sum = 0;
+        int sequence = 0;
+        int direction = 0;
+        int row;
+        int col;
 
         // Check left-right
-        for (int row = lastPieceRow; row < NUM_GRID_ROWS && sum != 4; row += dy)
+        row = lastPieceRow;
+        for (col = 0; col < NUM_GRID_COLUMNS && sequence != 4; col++)
         {
-            for (int col = lastPieceColumn; col < NUM_GRID_COLUMNS; col += dx)
+            if (grid[row][col] == lastPiecePlayerID)
             {
-                int currentPiece = grid[row][col];
-                if (currentPiece == lastPiecePlayerID)
-                {
-                    sum++;
-                }
+                sequence++;
+            }
+            else
+            {
+                sequence = 0;
             }
         }
-        return false;
+
+        if (sequence == 4)
+        {
+            return true;
+        }
+
+        // Check up-down
+        sequence = 0;
+        col = lastPieceColumn;
+        for (row = 0; row < NUM_GRID_ROWS && sequence != 4; row++)
+        {
+            if (grid[row][col] == lastPiecePlayerID)
+            {
+                sequence++;
+            }
+            else
+            {
+                sequence = 0;
+            }
+        }
+
+        if (sequence == 4)
+        {
+            return true;
+        }
+
+        int adjustment = Math.min(lastPieceRow, lastPieceColumn);
+        // Main diagonal
+        sequence = 0;
+        col = lastPieceColumn - adjustment;
+        for (row = lastPieceRow - adjustment; row < NUM_GRID_ROWS
+                && col < NUM_GRID_COLUMNS && sequence != 4; row++, col++)
+        {
+            if (grid[row][col] == lastPiecePlayerID)
+            {
+                sequence++;
+            }
+            else
+            {
+                sequence = 0;
+            }
+        }
+
+        if (sequence == 4)
+        {
+            return true;
+        }
+
+        // Other diagonal
+        sequence = 0;
+        col = lastPieceColumn + adjustment;
+        for (row = lastPieceRow + adjustment; row >= 0 && col >= 0 && sequence != 4; row--, col--)
+        {
+            if (grid[row][col] == lastPiecePlayerID)
+            {
+                sequence++;
+            }
+            else
+            {
+                sequence = 0;
+            }
+        }
+        return sequence == 4;
     }
 
     @Override
@@ -114,24 +197,16 @@ public class Connect4Grid2DArray implements Connect4Grid
 
     private int getNextFreeSlot(int column)
     {
-        if (checkColumnValidity(column))
+        for (int row = 0; row < NUM_GRID_ROWS; row++)
         {
-            for (int row = 0; row < NUM_GRID_ROWS; row++)
+            int currentSlotValue = grid[row][column];
+            if ((row == NUM_GRID_ROWS - 1 && currentSlotValue == 0)
+                    || (currentSlotValue == 0 && grid[row + 1][column] != 0))
             {
-                int currentSlotValue = grid[row][column];
-                if ((row == NUM_GRID_ROWS - 1 && currentSlotValue == 0)
-                        || (currentSlotValue == 0 && grid[row + 1][column] != 0))
-                {
-                    return row;
-                }
+                return row;
             }
         }
         return -1;
     }
-
-    private boolean checkColumnValidity(int column)
-    {
-        return isValidColumn(column) && !isColumnFull(column);
-    }
-
 }
+
