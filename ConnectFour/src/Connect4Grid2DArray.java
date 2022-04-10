@@ -1,5 +1,3 @@
-import java.lang.reflect.Field;
-
 public class Connect4Grid2DArray implements Connect4Grid
 {
     public static final int NUM_GRID_COLUMNS = 7;
@@ -32,22 +30,23 @@ public class Connect4Grid2DArray implements Connect4Grid
     @Override
     public String toString()
     {
-        String representation = " 1 2 3 4 5 6 7\n -------------";
+        String representation = "    THE GRID";
         for (int row = 0; row < NUM_GRID_ROWS; row++)
         {
-            representation += "\n" + (row - 1) + " |";
+            representation += "\n" + (row + 1);
             for (int col = 0; col < NUM_GRID_COLUMNS; col++)
             {
-                representation += grid[row][col] == 0 ? " " : grid[row][col] == 1 ? " 1" : " 2";
+                representation += grid[row][col] == 0 ? " E" : grid[row][col] == PLAYER_ONE ? " R" : " Y";
             }
         }
+        representation += "\n  1 2 3 4 5 6 7";
         return representation;
     }
 
     @Override
     public boolean isValidColumn(int column)
     {
-        if (column >= 1 && column <= NUM_GRID_COLUMNS)
+        if (column >= 0 && column < NUM_GRID_COLUMNS)
         {
             return true;
         }
@@ -57,35 +56,17 @@ public class Connect4Grid2DArray implements Connect4Grid
     @Override
     public boolean isColumnFull(int column)
     {
-        for (int row = 0; row < grid.length; row++)
-        {
-            if (grid[row][column] != 0)
-            {
-                return true;
-            }
-        }
-        return true;
+        return grid[0][column] != 0;
     }
 
     @Override
     public void dropPiece(ConnectPlayer player, int column)
     {
-        if (!isValidColumn(column))
-        {
-            System.out.println("That column is invalid. It must be in the range 1-7.");
-        }
-        else if (isColumnFull(column))
-        {
-            System.out.println("The column is full, please try again.");
-        }
-        else
-        {
-            int row = getNextFreeSlot(column);
-            grid[row][column] = player.getPlayerID();
-            lastPiecePlayerID = player.getPlayerID();
-            lastPieceRow = row;
-            lastPieceColumn = column;
-        }
+        int row = getNextFreeSlot(column);
+        grid[row][column] = player.getPlayerID();
+        lastPiecePlayerID = player.getPlayerID();
+        lastPieceRow = row;
+        lastPieceColumn = column;
     }
 
     @Override
@@ -163,9 +144,10 @@ public class Connect4Grid2DArray implements Connect4Grid
         }
 
         // Other diagonal
+        adjustment = (NUM_GRID_COLUMNS - 2) - lastPieceColumn;
         sequence = 0;
-        col = lastPieceColumn + adjustment;
-        for (row = lastPieceRow + adjustment; row >= 0 && col >= 0 && sequence != 4; row--, col--)
+        col = Math.min(lastPieceColumn + adjustment, NUM_GRID_COLUMNS - 1);
+        for (row = Math.max((lastPieceRow - adjustment), 0); row < NUM_GRID_ROWS && col >= 0 && sequence != 4; row++, col--)
         {
             if (grid[row][col] == lastPiecePlayerID)
             {

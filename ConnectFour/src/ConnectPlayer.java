@@ -2,24 +2,15 @@ public abstract class ConnectPlayer
 {
     public static final int PLAYER_ONE_ID = 1;
     public static final int PLAYER_TWO_ID = 2;
-    private String colour;
     private int playerID;
 
-    public ConnectPlayer(int playerID, String color)
+    public ConnectPlayer(int playerID)
     {
         if (playerID != PLAYER_ONE_ID && playerID != PLAYER_TWO_ID)
         {
             return;
         }
-    }
-    public String getColour()
-    {
-        return colour;
-    }
-
-    public void setColour(String colour)
-    {
-        this.colour = colour;
+        this.playerID = playerID;
     }
 
     public int getPlayerID()
@@ -27,11 +18,6 @@ public abstract class ConnectPlayer
         return playerID;
     }
 
-    public void setPlayerID(int playerID)
-    {
-        this.playerID = playerID;
-    }
-
-    public abstract void chooseColumn();
+    public abstract int chooseColumn();
 
 }
